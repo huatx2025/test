@@ -49,7 +49,7 @@ jobs:
         run: pnpm install
 
       - name: Build Windows app (unsigned)
-        run: pnpm run clean && pnpm run build && pnpm electron-builder --win --config.win.signAndEditExecutable=false
+        run: pnpm run clean && pnpm run build && pnpm electron-builder --win --config.win.signAndEditExecutable=false --publish always
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -57,7 +57,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-build
-          path: dist/*.exe
+          path: |
+            dist/*.exe
+            dist/*.yaml
           retention-days: 30
 
       - name: Release

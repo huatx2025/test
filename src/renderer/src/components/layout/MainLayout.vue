@@ -61,6 +61,15 @@
             </div>
             <template #overlay>
               <a-menu>
+                <a-menu-item key="check-update" @click="handleCheckUpdate">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 16H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                  <span style="margin-left: 8px;">检查更新</span>
+                </a-menu-item>
+                <a-menu-divider />
                 <a-menu-item key="logout" @click="handleLogout">
                   <LogoutOutlined />
                   <span style="margin-left: 8px;">退出登录</span>
@@ -129,6 +138,12 @@
       v-model:open="showAccountManagerModal"
       @refresh="handleAccountManagerRefresh"
     />
+
+    <!-- 更新弹窗 -->
+    <UpdateModal 
+      ref="updateModalRef"
+      v-model:open="showUpdateModal"
+    />
   </div>
 </template>
 
@@ -146,6 +161,7 @@ import Editor from '@/views/Editor/index.vue'
 import TaskPopover from '@/components/common/TaskPopover.vue'
 import AccountList from '@/components/business/AccountList.vue'
 import AccountManagerModal from '@/components/business/AccountManagerModal.vue'
+import UpdateModal from '@/components/common/UpdateModal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -163,6 +179,10 @@ const accountListRef = ref(null)
 
 // 账号管理器弹窗
 const showAccountManagerModal = ref(false)
+
+// 更新弹窗
+const showUpdateModal = ref(false)
+const updateModalRef = ref(null)
 
 // 窗口控制方法
 const minimizeWindow = () => {
@@ -234,6 +254,14 @@ const handleAccountManagerClick = () => {
 const handleAccountManagerRefresh = () => {
   // 刷新账号列表
   accountStore.fetchGroups()
+}
+
+// 检查更新
+const handleCheckUpdate = () => {
+  showUpdateModal.value = true
+  setTimeout(() => {
+    updateModalRef.value?.checkForUpdates()
+  }, 100)
 }
 
 // 检查窗口状态
