@@ -46,7 +46,7 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm install
 
       - name: Build macOS app (unsigned)
         run: pnpm run build:mac -- --config.mac.sign=false --config.mac.identity=null
