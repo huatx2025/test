@@ -1,0 +1,13 @@
+node_modules
+dist
+out
+.DS_Store
+.eslintcache
+*.log*
+.idea/
+package-lock.json
+.trae
+dist/
+build
+out/
+pnpm-lock.yaml
