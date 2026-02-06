@@ -96,7 +96,7 @@ easydraft-editor/
 ### 6. 自动更新
 - **版本检测**: 自动检测新版本
 - **静默更新**: 后台下载更新包
-- **更新服务器**: `https://static.dajiala.com:9224/static/gaoqingsongv2/autoupdate`
+- **更新服务器**: `https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong`
 
 ---
 

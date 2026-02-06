@@ -7,6 +7,5 @@ out
 .idea/
 package-lock.json
 .trae
-dist/
 out/
 pnpm-lock.yaml
