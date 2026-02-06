@@ -67,7 +67,31 @@ jobs:
         run: |
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
           chmod 600 id_rsa
-          scp -i id_rsa -o StrictHostKeyChecking=no dist/*.dmg dist/*.yaml ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.SERVER_PATH }}
+          
+          echo "=== 检查构建文件 ==="
+          ls -lh dist/
+          
+          echo "=== 开始上传到服务器 ==="
+          echo "目标路径: ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.SERVER_PATH }}"
+          
+          scp -i id_rsa -o StrictHostKeyChecking=no -v dist/*.dmg dist/*.yaml ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.SERVER_PATH }}
+          
+          echo "=== 上传完成 ==="
+          rm id_rsa
+        shell: bash
+
+      - name: Verify upload
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
+          chmod 600 id_rsa
+          
+          echo "=== 验证服务器上的文件 ==="
+          ssh -i id_rsa -o StrictHostKeyChecking=no ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }} "ls -lh ${{ secrets.SERVER_PATH }}"
+          
+          echo "=== 测试访问 latest-mac.yml ==="
+          curl -I https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong/latest-mac.yml
+          
           rm id_rsa
         shell: bash
 
