@@ -14,7 +14,6 @@ asarUnpack:
 win:
   executableName: easydraft-editor
   target: nsis
-  sign: false
   publish:
     provider: generic
     url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong
