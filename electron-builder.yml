@@ -1,0 +1,55 @@
+appId: com.electron.app
+productName: 编轻松
+directories:
+  output: dist
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+asarUnpack:
+  - resources/**
+win:
+  executableName: easydraft-editor
+  target: nsis
+  publish:
+    provider: generic
+    url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: build/icon.ico
+  uninstallerIcon: build/icon.ico
+  installerHeaderIcon: build/icon.ico
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    - NSCameraUsageDescription: Application requests access to device's camera.
+    - NSMicrophoneUsageDescription: Application requests access to device's microphone.
+    - NSDocumentsFolderUsageDescription: Application requests access to user's Documents folder.
+    - NSDownloadsFolderUsageDescription: Application requests access to user's Downloads folder.
+  notarize: false
+  publish:
+    provider: generic
+    url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong
+dmg:
+  artifactName: ${name}-${version}.${ext}
+linux:
+  target:
+    - AppImage
+    - snap
+    - deb
+  maintainer: electronjs.org
+  category: Utility
+appImage:
+  artifactName: ${name}-${version}.${ext}
+npmRebuild: false
+publish:
+  provider: generic
+  url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong
