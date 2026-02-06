@@ -264,6 +264,20 @@ const handleCheckUpdate = () => {
   }, 100)
 }
 
+// 监听自动更新事件
+const setupUpdateListeners = () => {
+  const updater = window.electronAPI?.updater
+  if (!updater) return
+
+  updater.onUpdateAvailable((info) => {
+    showUpdateModal.value = true
+  })
+
+  updater.onUpdateDownloaded((info) => {
+    showUpdateModal.value = true
+  })
+}
+
 // 检查窗口状态
 const checkWindowState = async () => {
   if (window.electronAPI?.window) {
@@ -287,6 +301,8 @@ onMounted(() => {
   if (window.electronAPI?.window?.onMaximizedChanged) {
     window.electronAPI.window.onMaximizedChanged(handleMaximizedChanged)
   }
+  // 监听自动更新事件
+  setupUpdateListeners()
 })
 
 onUnmounted(() => {

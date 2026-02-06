@@ -62,6 +62,15 @@ jobs:
             dist/*.yaml
           retention-days: 30
 
+      - name: Upload to server
+        if: startsWith(github.ref, 'refs/tags/v')
+        run: |
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > id_rsa
+          chmod 600 id_rsa
+          scp -i id_rsa -o StrictHostKeyChecking=no dist/*.exe dist/*.yaml ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:${{ secrets.SERVER_PATH }}
+          rm id_rsa
+        shell: bash
+
       - name: Release
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v1

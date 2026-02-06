@@ -49,21 +49,6 @@ const updaterService = {
     autoUpdater.on('update-available', (info) => {
       console.log('[Updater] 发现新版本:', info.version)
       this.sendToRenderer('update-available', info)
-      
-      // 弹窗询问用户是否下载
-      dialog.showMessageBox({
-        type: 'info',
-        title: '发现新版本',
-        message: `发现新版本 ${info.version}，是否立即下载？`,
-        detail: `当前版本: ${autoUpdater.currentVersion}\n最新版本: ${info.version}`,
-        buttons: ['稍后提醒', '立即下载'],
-        defaultId: 1,
-        cancelId: 0
-      }).then((result) => {
-        if (result.response === 1) {
-          autoUpdater.downloadUpdate()
-        }
-      })
     })
 
     // 没有新版本
@@ -82,21 +67,6 @@ const updaterService = {
     autoUpdater.on('update-downloaded', (info) => {
       console.log('[Updater] 下载完成:', info.version)
       this.sendToRenderer('update-downloaded', info)
-      
-      // 弹窗询问用户是否立即安装
-      dialog.showMessageBox({
-        type: 'info',
-        title: '更新就绪',
-        message: `新版本 ${info.version} 已下载完成`,
-        detail: '重启应用以完成更新。',
-        buttons: ['稍后重启', '立即重启'],
-        defaultId: 1,
-        cancelId: 0
-      }).then((result) => {
-        if (result.response === 1) {
-          autoUpdater.quitAndInstall()
-        }
-      })
     })
   },
 

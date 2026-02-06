@@ -17,7 +17,7 @@ win:
   sign: false
   publish:
     provider: generic
-    url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong/
+    url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -38,7 +38,7 @@ mac:
   notarize: false
   publish:
     provider: generic
-    url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong/
+    url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong
 dmg:
   artifactName: ${name}-${version}.${ext}
 linux:
@@ -53,4 +53,4 @@ appImage:
 npmRebuild: false
 publish:
   provider: generic
-  url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong/
+  url: https://static.dajiala.com:9224/static/gaoqingsong/bianqingsong
