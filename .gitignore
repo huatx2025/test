@@ -8,6 +8,5 @@ out
 package-lock.json
 .trae
 dist/
-build
 out/
 pnpm-lock.yaml
