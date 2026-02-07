@@ -1,6 +1,6 @@
 {
   "name": "easydraft-editor",
-  "version": "1.0.2",
+  "version": "1.0.1",
   "description": "编轻松自媒体编辑器",
   "main": "./out/main/index.js",
   "author": "jzl.com",

@@ -1,4 +1,4 @@
-appId: com.electron.app
+appId: com.electron.easydraft-editor
 productName: 编轻松
 directories:
   output: dist
