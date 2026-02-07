@@ -16,10 +16,12 @@ on:
 jobs:
   build:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
     
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
+      fail-fast: false
     
     steps:
       - name: Checkout code
@@ -47,9 +49,11 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+        continue-on-error: true
       
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        timeout-minutes: 15
       
       - name: Build application
         run: pnpm run build

@@ -15,11 +15,13 @@ on:
 jobs:
   test:
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 45
     
     strategy:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
         node-version: [18, 20]
+      fail-fast: false
     
     steps:
       - name: Checkout code
@@ -47,9 +49,11 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+        continue-on-error: true
       
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        timeout-minutes: 15
       
       - name: Run linter
         run: pnpm run lint
@@ -66,6 +70,7 @@ jobs:
 
   build-dev:
     runs-on: windows-latest
+    timeout-minutes: 45
     if: github.event_name == 'push'
     
     steps:
@@ -94,9 +99,11 @@ jobs:
           key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
+        continue-on-error: true
       
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+        timeout-minutes: 15
       
       - name: Build development version
         run: pnpm run build:dev:win
