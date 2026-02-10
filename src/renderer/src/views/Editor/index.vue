@@ -62,11 +62,62 @@ import { deserializePartition } from '@/utils/partitionHelper'
 const ATabPane = ATabs.TabPane
 
 // 导入微信编辑器服务
-import { initWechatEditorPage, parseSyncMessage } from './services/wechat-editor.js'
+import { initWechatEditorPage, parseSyncMessage, parseSaveDraftMessage, parsePublishMessage } from './services/wechat-editor.js'
 import AccountSelector from '@/components/common/AccountSelector.vue'
 import { getDraftDetail } from '@/.thidparty_api/wechat'
 import { createSyncWechatDraftTask } from '@/utils/wechat'
 import { useTaskManager } from '@/composables/useTaskManager'
+
+// 记录保存草稿统计（通过主进程绕过 CORS）
+const recordSaveStats = async () => {
+  console.log('开始调用 recordSaveStats')
+  try {
+    const result = await window.electronAPI.http.recordSaveStats()
+    if (result.ok) {
+      console.log('保存草稿统计记录成功:', result.data)
+    } else {
+      console.error('保存草稿统计记录失败:', result.error)
+    }
+  } catch (error) {
+    console.error('保存草稿统计记录失败:', error)
+    // 统计失败不影响主流程
+  }
+  console.log('recordSaveStats 调用结束')
+}
+
+// 记录同步统计（通过主进程绕过 CORS）
+const recordSyncStats = async () => {
+  console.log('开始调用 recordSyncStats')
+  try {
+    const result = await window.electronAPI.http.recordSyncStats()
+    if (result.ok) {
+      console.log('同步统计记录成功:', result.data)
+    } else {
+      console.error('同步统计记录失败:', result.error)
+    }
+  } catch (error) {
+    console.error('同步统计记录失败:', error)
+    // 统计失败不影响主流程
+  }
+  console.log('recordSyncStats 调用结束')
+}
+
+// 记录发表统计（通过主进程绕过 CORS）
+const recordPublishStats = async () => {
+  console.log('开始调用 recordPublishStats')
+  try {
+    const result = await window.electronAPI.http.recordPublishStats()
+    if (result.ok) {
+      console.log('发表统计记录成功:', result.data)
+    } else {
+      console.error('发表统计记录失败:', result.error)
+    }
+  } catch (error) {
+    console.error('发表统计记录失败:', error)
+    // 统计失败不影响主流程
+  }
+  console.log('recordPublishStats 调用结束')
+}
 
 // 路由
 const route = useRoute()
@@ -144,9 +195,14 @@ const setupWebviewConsoleListener = (webviewEl, tabKey) => {
   const listener = (event) => {
     const msg = event.message
     const syncData = parseSyncMessage(msg)
+    const saveDraftData = parseSaveDraftMessage(msg)
+    const publishData = parsePublishMessage(msg)
     
     if (syncData && syncData.appmsgid) {
       console.log('[编辑器] 收到同步请求:', syncData)
+      
+      // 记录同步统计
+      recordSyncStats()
       
       // 查找对应的 tab 获取 accountId
       const tab = editorTabs.value.find(t => t.key === tabKey)
@@ -162,6 +218,14 @@ const setupWebviewConsoleListener = (webviewEl, tabKey) => {
       } else {
         message.error('无法获取当前账号信息')
       }
+    } else if (saveDraftData) {
+      console.log('[编辑器] 收到保存草稿成功消息:', saveDraftData)
+      // 调用保存草稿统计
+      recordSaveStats()
+    } else if (publishData) {
+      console.log('[编辑器] 收到发表成功消息:', publishData)
+      // 调用发表统计
+      recordPublishStats()
     }
   }
   

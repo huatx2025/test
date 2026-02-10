@@ -107,6 +107,23 @@ import {
 } from '../services/wechat-editor.js'
 import AILayoutDebugModal from './AILayoutDebugModal.vue'
 
+// 记录导入统计（通过主进程绕过 CORS）
+const recordImportStats = async (articleCount) => {
+  console.log('开始调用 recordImportStats，文章数量:', articleCount)
+  try {
+    const result = await window.electronAPI.http.recordStats(articleCount)
+    if (result.ok) {
+      console.log('导入统计记录成功:', result.data)
+    } else {
+      console.error('导入统计记录失败:', result.error)
+    }
+  } catch (error) {
+    console.error('导入统计记录失败:', error)
+    // 统计失败不影响主流程
+  }
+  console.log('recordImportStats 调用结束')
+}
+
 // 注入获取webview的方法
 const getActiveWebview = inject('getActiveWebview')
 
@@ -299,6 +316,11 @@ const handleImportConfirm = async () => {
     importModalVisible.value = false
     message.success(`成功导入 ${validUrls.length} 篇文章`)
 
+    // 记录导入统计
+    console.log('准备调用 recordImportStats')
+    await recordImportStats(validUrls.length)
+    console.log('recordImportStats 调用完成')
+
     // 导入成功后重置输入框数量
     const targetCount = Math.min(manualInputCount.value, MAX_IMPORT_COUNT)
     importUrls.value = Array(targetCount).fill(null).map(() => ({ url: '', error: false }))
@@ -332,6 +354,9 @@ const handleContentConfirmOverwrite = async () => {
 
       const totalCount = 1 + remainingSuccess
       message.success(`成功导入 ${totalCount} 篇文章`)
+      
+      // 记录导入统计
+      await recordImportStats(totalCount)
     } catch (error) {
       message.error(`填充失败: ${error.message}`)
     }
@@ -354,6 +379,9 @@ const handleContentConfirmCreateNew = async () => {
 
       const totalCount = 1 + remainingSuccess
       message.success(`成功导入 ${totalCount} 篇文章`)
+      
+      // 记录导入统计
+      await recordImportStats(totalCount)
     } catch (error) {
       message.error(`创建失败: ${error.message}`)
     }

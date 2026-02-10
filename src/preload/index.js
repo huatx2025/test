@@ -60,7 +60,19 @@ const httpAPI = {
   fetchImage: (url, options) => ipcRenderer.invoke('http:fetchImage', url, options),
   
   // 中止请求
-  abort: (requestId) => ipcRenderer.invoke('http:abort', requestId)
+  abort: (requestId) => ipcRenderer.invoke('http:abort', requestId),
+  
+  // 记录导入统计
+  recordStats: (articleCount) => ipcRenderer.invoke('http:recordStats', articleCount),
+  
+  // 记录保存草稿统计
+  recordSaveStats: () => ipcRenderer.invoke('http:recordSaveStats'),
+  
+  // 记录同步统计
+  recordSyncStats: () => ipcRenderer.invoke('http:recordSyncStats'),
+  
+  // 记录发表统计
+  recordPublishStats: () => ipcRenderer.invoke('http:recordPublishStats')
 }
 
 // Storage 管理 API

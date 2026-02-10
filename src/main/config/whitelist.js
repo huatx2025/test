@@ -6,23 +6,22 @@
 // 白名单域名列表
 export const HTTP_WHITELIST = [
   // 微信公众平台相关
-  'mp.weixin.qq.com',          // 微信公众平台
-  'api.weixin.qq.com',         // 微信API
-  'weixin.qq.com',             // 微信主域名
-  'mmbiz.qpic.cn',             // 微信图片CDN
-  'mmbiz.qlogo.cn',            // 微信图片CDN
-  'mmecoa.qpic.cn',            // 微信图片CDN（新版）
+  'mp.weixin.qq.com', // 微信公众平台
+  'api.weixin.qq.com', // 微信API
+  'weixin.qq.com', // 微信主域名
+  'mmbiz.qpic.cn', // 微信图片CDN
+  'mmbiz.qlogo.cn', // 微信图片CDN
+  'mmecoa.qpic.cn', // 微信图片CDN（新版）
 
   // 小红书相关
-  'xiaohongshu.com',           // 小红书主域名
-  'www.xiaohongshu.com',       // 小红书官网
-  'creator.xiaohongshu.com',   // 小红书创作中心
+  'xiaohongshu.com', // 小红书主域名
+  'www.xiaohongshu.com', // 小红书官网
+  'creator.xiaohongshu.com', // 小红书创作中心
 
   // 本地开发
-  'localhost',                 // 本地开发
-  '127.0.0.1',                 // 本地开发
-  '192.168.1.10',              // 本地开发
-
+  'localhost', // 本地开发
+  '127.0.0.1', // 本地开发
+  '192.168.1.10', // 本地开发
   // 可在此添加更多平台域名...
 ]
 

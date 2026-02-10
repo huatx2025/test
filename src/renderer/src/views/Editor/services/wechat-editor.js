@@ -653,6 +653,8 @@ export function generateAddSyncButtonCode() {
               setTimeout(() => {
                 const appmsgid = getAppmsgIdFromUrl();
                 console.log('%c草稿保存成功，appmsgid:', 'color: #6666FF;', appmsgid);
+                // 输出特殊格式消息，供父组件监听保存草稿成功事件
+                console.log('[EASYDRAFT:save-draft-success]' + JSON.stringify({ appmsgid }));
                 resolve(appmsgid);
               }, 500);
             } else if (checkCount >= maxChecks) {
@@ -697,6 +699,53 @@ export function generateAddSyncButtonCode() {
           text.innerText = '同步到其他账号';
         }
       });
+
+      // 监听原生"保存为草稿"按钮的点击事件
+      const saveBtn = document.getElementById('js_submit');
+      if (saveBtn) {
+        const actualSaveBtn = saveBtn.querySelector('button') || saveBtn;
+        
+        actualSaveBtn.addEventListener('click', async function () {
+          console.log('%c检测到原生保存为草稿按钮被点击', 'color: #6666FF;');
+          
+          // 等待保存完成
+          let checkCount = 0;
+          const maxChecks = 60;
+          
+          const checkInterval = setInterval(() => {
+            checkCount++;
+            
+            const sendWording = saveBtn.querySelector('.send_wording');
+            const isComplete = sendWording &&
+              (sendWording.style.display === 'inline' || getComputedStyle(sendWording).display === 'inline');
+            
+            if (isComplete) {
+              clearInterval(checkInterval);
+              // 再等待一小段时间确保URL已更新
+              setTimeout(() => {
+                const appmsgid = getAppmsgIdFromUrl();
+                console.log('%c原生保存草稿成功，appmsgid:', 'color: #6666FF;', appmsgid);
+                // 输出特殊格式消息，供父组件监听保存草稿成功事件
+                console.log('[EASYDRAFT:save-draft-success]' + JSON.stringify({ appmsgid }));
+              }, 500);
+            } else if (checkCount >= maxChecks) {
+              clearInterval(checkInterval);
+            }
+          }, 500);
+        });
+      }
+
+      // 监听原生"发表"按钮的点击事件
+      const publishBtn = document.getElementById('js_send');
+      if (publishBtn) {
+        const actualPublishBtn = publishBtn.querySelector('button') || publishBtn;
+        
+        actualPublishBtn.addEventListener('click', async function () {
+          console.log('%c检测到原生发表按钮被点击', 'color: #6666FF;');
+          // 输出特殊格式消息，供父组件监听发表事件
+          console.log('[EASYDRAFT:publish-success]' + JSON.stringify({}));
+        });
+      }
 
       console.log('%c已添加同步按钮', 'color: #6666FF;');
       return true;
@@ -827,6 +876,42 @@ export function extractAppmsgIdFromUrl(url) {
  */
 export function parseSyncMessage(message) {
   const prefix = '[EASYDRAFT:sync-to-other-account]'
+  if (message && message.startsWith(prefix)) {
+    try {
+      const jsonStr = message.slice(prefix.length)
+      return JSON.parse(jsonStr)
+    } catch {
+      return null
+    }
+  }
+  return null
+}
+
+/**
+ * 解析保存草稿成功消息
+ * @param {string} message - console 消息
+ * @returns {Object|null} 解析后的消息对象，包含 appmsgid；如果不是保存草稿成功消息则返回 null
+ */
+export function parseSaveDraftMessage(message) {
+  const prefix = '[EASYDRAFT:save-draft-success]'
+  if (message && message.startsWith(prefix)) {
+    try {
+      const jsonStr = message.slice(prefix.length)
+      return JSON.parse(jsonStr)
+    } catch {
+      return null
+    }
+  }
+  return null
+}
+
+/**
+ * 解析发表成功消息
+ * @param {string} message - console 消息
+ * @returns {Object|null} 解析后的消息对象；如果不是发表成功消息则返回 null
+ */
+export function parsePublishMessage(message) {
+  const prefix = '[EASYDRAFT:publish-success]'
   if (message && message.startsWith(prefix)) {
     try {
       const jsonStr = message.slice(prefix.length)

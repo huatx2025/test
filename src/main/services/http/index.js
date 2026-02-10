@@ -28,6 +28,26 @@ class HttpService {
     ipcMain.handle('http:abort', async (event, requestId) => {
       return this.abortRequest(requestId)
     })
+
+    // 记录导入统计接口（绕过 CORS）
+    ipcMain.handle('http:recordStats', async (event, articleCount) => {
+      return await this.recordImportStats(articleCount)
+    })
+
+    // 记录保存草稿统计接口（绕过 CORS）
+    ipcMain.handle('http:recordSaveStats', async (event) => {
+      return await this.recordSaveStats()
+    })
+
+    // 记录同步统计接口（绕过 CORS）
+    ipcMain.handle('http:recordSyncStats', async (event) => {
+      return await this.recordSyncStats()
+    })
+
+    // 记录发表统计接口（绕过 CORS）
+    ipcMain.handle('http:recordPublishStats', async (event) => {
+      return await this.recordPublishStats()
+    })
   }
 
   async fetch(url, options = {}) {
@@ -132,6 +152,227 @@ class HttpService {
         ok: false,
         status: 500,
         data: null,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * 记录导入统计（绕过 CORS）
+   * @param {number} articleCount - 导入的文章数量
+   */
+  async recordImportStats(articleCount) {
+    const API_URL = 'http://47.111.132.55:8000/api/set_redis_key'
+    const API_PWD = 'nKoehQVxmVMc2Jgg'
+
+    try {
+      // 生成今天的日期格式：YYYY-MM-DD
+      const today = new Date().toISOString().split('T')[0]
+      const keyName = `bqs:import:${today}`
+
+      const response = await axios({
+        method: 'POST',
+        url: API_URL,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        data: {
+          pwd: API_PWD,
+          mode: 2,
+          key_name: keyName,
+          incr_by: articleCount,
+          expire: 691200
+        },
+        timeout: 10000,
+        validateStatus: () => true
+      })
+
+      if (response.status >= 200 && response.status < 300) {
+        console.log('[HttpService] 导入统计记录成功:', response.data)
+        return {
+          ok: true,
+          status: response.status,
+          data: response.data
+        }
+      } else {
+        console.error('[HttpService] 导入统计记录失败:', response.status, response.data)
+        return {
+          ok: false,
+          status: response.status,
+          error: `统计记录失败: ${response.status}`
+        }
+      }
+    } catch (error) {
+      console.error('[HttpService] 导入统计记录异常:', error)
+      return {
+        ok: false,
+        status: 500,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * 记录保存草稿统计（绕过 CORS）
+   */
+  async recordSaveStats() {
+    const API_URL = 'http://47.111.132.55:8000/api/set_redis_key'
+    const API_PWD = 'nKoehQVxmVMc2Jgg'
+
+    try {
+      // 生成今天的日期格式：YYYY-MM-DD
+      const today = new Date().toISOString().split('T')[0]
+      const keyName = `bqs:save:${today}`
+
+      const response = await axios({
+        method: 'POST',
+        url: API_URL,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        data: {
+          pwd: API_PWD,
+          mode: 2,
+          key_name: keyName,
+          incr_by: 1,
+          expire: 691200
+        },
+        timeout: 10000,
+        validateStatus: () => true
+      })
+
+      if (response.status >= 200 && response.status < 300) {
+        console.log('[HttpService] 保存草稿统计记录成功:', response.data)
+        return {
+          ok: true,
+          status: response.status,
+          data: response.data
+        }
+      } else {
+        console.error('[HttpService] 保存草稿统计记录失败:', response.status, response.data)
+        return {
+          ok: false,
+          status: response.status,
+          error: `统计记录失败: ${response.status}`
+        }
+      }
+    } catch (error) {
+      console.error('[HttpService] 保存草稿统计记录异常:', error)
+      return {
+        ok: false,
+        status: 500,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * 记录同步统计（绕过 CORS）
+   */
+  async recordSyncStats() {
+    const API_URL = 'http://47.111.132.55:8000/api/set_redis_key'
+    const API_PWD = 'nKoehQVxmVMc2Jgg'
+
+    try {
+      // 生成今天的日期格式：YYYY-MM-DD
+      const today = new Date().toISOString().split('T')[0]
+      const keyName = `bqs:sync:${today}`
+
+      const response = await axios({
+        method: 'POST',
+        url: API_URL,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        data: {
+          pwd: API_PWD,
+          mode: 2,
+          key_name: keyName,
+          incr_by: 1,
+          expire: 691200
+        },
+        timeout: 10000,
+        validateStatus: () => true
+      })
+
+      if (response.status >= 200 && response.status < 300) {
+        console.log('[HttpService] 同步统计记录成功:', response.data)
+        return {
+          ok: true,
+          status: response.status,
+          data: response.data
+        }
+      } else {
+        console.error('[HttpService] 同步统计记录失败:', response.status, response.data)
+        return {
+          ok: false,
+          status: response.status,
+          error: `统计记录失败: ${response.status}`
+        }
+      }
+    } catch (error) {
+      console.error('[HttpService] 同步统计记录异常:', error)
+      return {
+        ok: false,
+        status: 500,
+        error: error.message
+      }
+    }
+  }
+
+  /**
+   * 记录发表统计（绕过 CORS）
+   */
+  async recordPublishStats() {
+    const API_URL = 'http://47.111.132.55:8000/api/set_redis_key'
+    const API_PWD = 'nKoehQVxmVMc2Jgg'
+
+    try {
+      // 生成今天的日期格式：YYYY-MM-DD
+      const today = new Date().toISOString().split('T')[0]
+      const keyName = `bqs:publish:${today}`
+
+      const response = await axios({
+        method: 'POST',
+        url: API_URL,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        data: {
+          pwd: API_PWD,
+          mode: 2,
+          key_name: keyName,
+          incr_by: 1,
+          expire: 691200
+        },
+        timeout: 10000,
+        validateStatus: () => true
+      })
+
+      if (response.status >= 200 && response.status < 300) {
+        console.log('[HttpService] 发表统计记录成功:', response.data)
+        return {
+          ok: true,
+          status: response.status,
+          data: response.data
+        }
+      } else {
+        console.error('[HttpService] 发表统计记录失败:', response.status, response.data)
+        return {
+          ok: false,
+          status: response.status,
+          error: `统计记录失败: ${response.status}`
+        }
+      }
+    } catch (error) {
+      console.error('[HttpService] 发表统计记录异常:', error)
+      return {
+        ok: false,
+        status: 500,
         error: error.message
       }
     }
