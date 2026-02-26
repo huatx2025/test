@@ -1,0 +1,132 @@
+/* CSS Reset */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 根元素变量 */
+:root {
+  --color-primary: #6666FF;
+  --color-primary-rgb: 102, 102, 255;
+  --color-text: #1f2937;
+  --color-text-secondary: #6b7280;
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-border: #e5e7eb;
+}
+
+/* HTML & Body */
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  background: transparent;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  
+  &.window-maximized {
+    background: transparent;
+  }
+}
+
+body {
+  background-color: transparent;
+  color: var(--color-text);
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  width: 100%;
+}
+
+/* 基础元素 */
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+ul, ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  outline: none;
+}
+
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+  border: 1px solid var(--color-border);
+  padding: 0.5rem;
+  background: var(--color-bg);
+  outline: none;
+}
+
+input:focus,
+textarea:focus {
+  border-color: var(--color-primary);
+}
+
+/* 滚动条 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-text-secondary);
+}
+
+/* 主容器 */
+#app {
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.window-maximized #app {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Ant Design Message 全局位置调整 */
+.ant-message {
+  top: 50px !important;
+}
+
+/* Electron 拖拽 */
+.drag {
+  -webkit-app-region: drag;
+}
+
+.no-drag {
+  -webkit-app-region: no-drag;
+}

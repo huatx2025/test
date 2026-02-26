@@ -1,0 +1,16 @@
+{
+  "id": "5104047",
+  "name": "easydraft",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1166139",
+      "name": "导入",
+      "font_class": "daoru",
+      "unicode": "e659",
+      "unicode_decimal": 58969
+    }
+  ]
+}
