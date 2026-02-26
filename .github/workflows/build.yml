@@ -21,6 +21,9 @@ jobs:
     
     runs-on: ${{ matrix.os }}
     
+    permissions:
+      contents: write
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -40,14 +43,14 @@ jobs:
       - name: Build Windows
         if: matrix.os == 'windows-latest'
         run: npm run build:win
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build macOS
         if: matrix.os == 'macos-latest'
         run: npm run build:mac
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: List dist directory (debug)
+        run: ls -R dist
+        shell: bash
 
       - name: Upload Windows artifacts
         if: matrix.os == 'windows-latest'
@@ -57,6 +60,7 @@ jobs:
           path: |
             dist/*.exe
             dist/*.zip
+          if-no-files-found: warn
           retention-days: 7
 
       - name: Upload macOS artifacts
@@ -67,6 +71,7 @@ jobs:
           path: |
             dist/*.dmg
             dist/*.zip
+          if-no-files-found: warn
           retention-days: 7
 
   release:
@@ -74,11 +79,17 @@ jobs:
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     
+    permissions:
+      contents: write
+    
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+
+      - name: List artifacts (debug)
+        run: ls -R artifacts
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
@@ -88,5 +99,6 @@ jobs:
             artifacts/macos-build/*
           draft: false
           prerelease: false
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
